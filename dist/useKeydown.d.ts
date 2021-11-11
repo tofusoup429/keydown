@@ -1,7 +1,7 @@
 declare type SubKey = 'Control' | 'Alt' | 'Tab' | 'Shift' | 'NN';
-declare type NodeEnv = 'production' | 'development' | 'test';
-declare const useKeydown: (nodeEnv: NodeEnv) => {
+declare const useKeydown: (domID?: string) => {
     subKey: SubKey;
     mainKey: string;
+    initKeys: () => void;
 };
 export default useKeydown;
