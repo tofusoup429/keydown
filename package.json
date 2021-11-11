@@ -1,6 +1,6 @@
 {
   "name": "@tofusoup429/keydown",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "react short-cut keydown",
   "homepage": "https://github.com/tofusoup429/keydown",
   "main": "dist/index.js",
