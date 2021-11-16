@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 type SubKey = 'Control'|'Alt'|'Tab'|'Shift'|'NN';
 //type ENV = 'production'|'development'|'test'
-const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()=>void} => {
+const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()=>void, switchDisable:()=>void} => {
     const [subKey, handleSubKey] = useState<'Control'|'Alt'|'Tab'|'Shift'|'NN'>('NN')
-    const [mainKey, handleMainKey] = useState<string>('')
+    const [mainKey, handleMainKey] = useState<string>('');
+    const [disabled, handleDisabled] = useState<boolean>(false)
     useEffect(() => {
         try{
             if(domID==="") document.addEventListener('keydown', handleKeydown)
@@ -20,16 +21,18 @@ const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()
     
     const handleKeydown = (e: any) => {
         let key:string = e.key;
-        switch(key){
-            case 'Control':
-            case 'Alt':
-            case 'Tab':
-            case 'Shift':        
-                (subKey === key)? handleSubKey('NN'):handleSubKey(key)
-                //when the same subKey pressed, it turns "NN"
-                break;
-            default:
-                handleMainKey(key)    
+        if(!disabled){
+            switch(key){
+                case 'Control':
+                case 'Alt':
+                case 'Tab':
+                case 'Shift':        
+                    (subKey === key)? handleSubKey('NN'):handleSubKey(key)
+                    //when the same subKey pressed, it turns "NN"
+                    break;
+                default:
+                    handleMainKey(key)    
+            }
         }
     }
 
@@ -37,7 +40,12 @@ const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()
         handleSubKey('NN');
         handleMainKey('')
     }
-    return {subKey, mainKey, initKeys}
+    const switchDisable = () =>{
+        initKeys();
+        handleDisabled((old)=>!old);
+    }
+
+    return {subKey, mainKey, initKeys, switchDisable}
 }
 
 export default useKeydown

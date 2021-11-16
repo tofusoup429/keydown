@@ -6,6 +6,7 @@ var useKeydown = function (domID) {
     if (domID === void 0) { domID = ""; }
     var _a = react_1.useState('NN'), subKey = _a[0], handleSubKey = _a[1];
     var _b = react_1.useState(''), mainKey = _b[0], handleMainKey = _b[1];
+    var _c = react_1.useState(false), disabled = _c[0], handleDisabled = _c[1];
     react_1.useEffect(function () {
         try {
             if (domID === "")
@@ -22,22 +23,28 @@ var useKeydown = function (domID) {
     }, []);
     var handleKeydown = function (e) {
         var key = e.key;
-        switch (key) {
-            case 'Control':
-            case 'Alt':
-            case 'Tab':
-            case 'Shift':
-                (subKey === key) ? handleSubKey('NN') : handleSubKey(key);
-                //when the same subKey pressed, it turns "NN"
-                break;
-            default:
-                handleMainKey(key);
+        if (!disabled) {
+            switch (key) {
+                case 'Control':
+                case 'Alt':
+                case 'Tab':
+                case 'Shift':
+                    (subKey === key) ? handleSubKey('NN') : handleSubKey(key);
+                    //when the same subKey pressed, it turns "NN"
+                    break;
+                default:
+                    handleMainKey(key);
+            }
         }
     };
     var initKeys = function () {
         handleSubKey('NN');
         handleMainKey('');
     };
-    return { subKey: subKey, mainKey: mainKey, initKeys: initKeys };
+    var switchDisable = function () {
+        initKeys();
+        handleDisabled(function (old) { return !old; });
+    };
+    return { subKey: subKey, mainKey: mainKey, initKeys: initKeys, switchDisable: switchDisable };
 };
 exports.default = useKeydown;
