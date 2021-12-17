@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-type SubKey = 'Control'|'Alt'|'Tab'|'Shift'|'NN';
 //type ENV = 'production'|'development'|'test'
-const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()=>void, switchDisable:()=>void} => {
-    const [subKey, handleSubKey] = useState<'Control'|'Alt'|'Tab'|'Shift'|'NN'>('NN')
+const useKeydown = (domID:string=""):{controlKeyDown:boolean, altKeyDown:boolean, shiftKeyDown:boolean, tabKeyDown:boolean, mainKey:string, initKeys:()=>void, switchDisable:()=>void} => {
+    const [controlKeyDown, handleControlKeyDown] = useState<boolean>(false)
+    const [shiftKeyDown, handleShiftKeyDown] = useState<boolean>(false)
+    const [altKeyDown, handleAltKeyDown] = useState<boolean>(false)
+    const [tabKeyDown, handleTabKeyDown] = useState<boolean>(false)
     const [mainKey, handleMainKey] = useState<string>('');
     const [disabled, handleDisabled] = useState<boolean>(false)
     useEffect(() => {
@@ -24,11 +26,16 @@ const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()
         if(!disabled){
             switch(key){
                 case 'Control':
+                    handleControlKeyDown(true);
+                    break;
                 case 'Alt':
+                    handleAltKeyDown(true)
+                    break;
                 case 'Tab':
-                case 'Shift':        
-                    (subKey === key)? handleSubKey('NN'):handleSubKey(key)
-                    //when the same subKey pressed, it turns "NN"
+                    handleTabKeyDown(true);
+                    break;
+                case 'Shift':
+                    handleShiftKeyDown(true);        
                     break;
                 default:
                     handleMainKey(key)    
@@ -37,15 +44,19 @@ const useKeydown = (domID:string=""):{subKey:SubKey, mainKey:string, initKeys:()
     }
 
     const initKeys = () => {
-        handleSubKey('NN');
-        handleMainKey('')
+        handleMainKey('');
+        handleControlKeyDown(false);
+        handleAltKeyDown(false);
+        handleShiftKeyDown(false);
+        handleTabKeyDown(false);
+
     }
     const switchDisable = () =>{
         initKeys();
         handleDisabled((old)=>!old);
     }
 
-    return {subKey, mainKey, initKeys, switchDisable}
+    return {controlKeyDown, altKeyDown, shiftKeyDown, tabKeyDown, mainKey, initKeys, switchDisable}
 }
 
 export default useKeydown

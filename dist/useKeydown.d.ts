@@ -1,6 +1,8 @@
-declare type SubKey = 'Control' | 'Alt' | 'Tab' | 'Shift' | 'NN';
 declare const useKeydown: (domID?: string) => {
-    subKey: SubKey;
+    controlKeyDown: boolean;
+    altKeyDown: boolean;
+    shiftKeyDown: boolean;
+    tabKeyDown: boolean;
     mainKey: string;
     initKeys: () => void;
     switchDisable: () => void;
